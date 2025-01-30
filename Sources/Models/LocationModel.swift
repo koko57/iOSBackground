@@ -48,8 +48,8 @@ extension LocationView {
     override init() {
       mgr = CLLocationManager()
       mgr.desiredAccuracy = kCLLocationAccuracyBest
-      mgr.requestWhenInUseAuthorization()
-      mgr.allowsBackgroundLocationUpdates = false
+      mgr.requestAlwaysAuthorization()
+      mgr.allowsBackgroundLocationUpdates = true
 
       super.init()
       mgr.delegate = self
