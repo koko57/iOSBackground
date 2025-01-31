@@ -57,5 +57,9 @@
 	<string>The app will show your location on a map</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>The app will show your location on a map</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.raywenderlich.sleepless.task.refresh</string>
+	</array>
 </dict>
 </plist>

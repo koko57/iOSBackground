@@ -1,4 +1,4 @@
-/// Copyright (c) 2022 Razeware LLC
+/// Copyright (c) 2025 Razeware LLC
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -29,16 +29,56 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
+///
+///
+import UIKit
+import BackgroundTasks
 
-import SwiftUI
+class AppDelegate: UIResponder, UIApplicationDelegate {
+  static var dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .long
+    return formatter
+  }()
 
-@main
-struct AppMain: App {
-  @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  var window: UIWindow?
 
-  var body: some Scene {
-    WindowGroup {
-      ContentView()
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    BGTaskScheduler.shared.register(
+      forTaskWithIdentifier: AppConstants.backgroundTaskIdentifier,
+      using: nil) { task in
+        self.refresh() // 1
+        task.setTaskCompleted(success: true) // 2
+        self.scheduleAppRefresh() // 3
+    }
+
+    scheduleAppRefresh()
+    return true
+  }
+  
+  func refresh() {
+    let formattedDate = Self.dateFormatter.string(from: Date())
+    UserDefaults.standard.set(
+      formattedDate,
+      forKey: UserDefaultsKeys.lastRefreshDateKey)
+    print("refresh occurred")
+  }
+  
+  func scheduleAppRefresh() {
+    let request = BGAppRefreshTaskRequest(
+      identifier: AppConstants.backgroundTaskIdentifier)
+    request.earliestBeginDate = Date(timeIntervalSinceNow: 1 * 60)
+    do {
+      try BGTaskScheduler.shared.submit(request)
+      print("background refresh scheduled")
+    } catch {
+      print("Couldn't schedule app refresh \(error.localizedDescription)")
     }
   }
 }
+
+
