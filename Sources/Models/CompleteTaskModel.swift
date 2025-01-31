@@ -41,6 +41,7 @@ extension CompleteTaskView {
     static let initialMessage = "Fibonacci Computations"
     static let maxValue = NSDecimalNumber(mantissa: 1, exponent: 40, isNegative: false)
 
+    var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var previous = NSDecimalNumber.one
     var current = NSDecimalNumber.one
     var position: UInt = 1
@@ -56,7 +57,24 @@ extension CompleteTaskView {
       } else {
         updateTimer?.invalidate()
         updateTimer = nil
+        endBackgroundTaskIfActive()
         resultsMessage = Self.initialMessage
+      }
+    }
+    
+    func registerBackgroundTask() {
+      backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+        print("iOS has signaled time has expired")
+        self?.endBackgroundTaskIfActive()
+      }
+    }
+    
+    func endBackgroundTaskIfActive() {
+      let isBackgroundTaskActive = backgroundTask != .invalid
+      if isBackgroundTaskActive {
+        print("Background task ended.")
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = .invalid
       }
     }
 
@@ -95,9 +113,14 @@ extension CompleteTaskView {
     func onChangeOfScenePhase(_ newPhase: ScenePhase) {
       switch newPhase {
       case .background:
-        break
+        let isTimerRunning = updateTimer != nil
+        let isTaskUnregistered = backgroundTask == .invalid
+
+        if isTimerRunning && isTaskUnregistered {
+          registerBackgroundTask()
+        }
       case .active:
-        break
+        endBackgroundTaskIfActive()
       default:
         break
       }

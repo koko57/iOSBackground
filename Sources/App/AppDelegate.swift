@@ -1,4 +1,4 @@
-/// Copyright (c) 2022 Razeware LLC
+/// Copyright (c) 2025 Razeware LLC
 /// 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -29,71 +29,56 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
+///
+///
+import UIKit
+import BackgroundTasks
 
-import Combine
-import CoreLocation
-import MapKit
+class AppDelegate: UIResponder, UIApplicationDelegate {
+  static var dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .long
+    return formatter
+  }()
 
-extension LocationView {
-  class Model: NSObject, CLLocationManagerDelegate, ObservableObject {
-    @Published var isLocationTrackingEnabled = false
-    @Published var location: CLLocation?
-    @Published var region = MKCoordinateRegion(
-      center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275),
-      span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
-    @Published var pins: [PinLocation] = []
+  var window: UIWindow?
 
-    let mgr: CLLocationManager
-
-    override init() {
-      mgr = CLLocationManager()
-      mgr.desiredAccuracy = kCLLocationAccuracyBest
-      mgr.requestAlwaysAuthorization()
-      mgr.allowsBackgroundLocationUpdates = true
-
-      super.init()
-      mgr.delegate = self
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    BGTaskScheduler.shared.register(
+      forTaskWithIdentifier: AppConstants.backgroundTaskIdentifier,
+      using: nil) { task in
+        self.refresh() // 1
+        task.setTaskCompleted(success: true) // 2
+        self.scheduleAppRefresh() // 3
     }
 
-    func enable() {
-      mgr.startUpdatingLocation()
-    }
-
-    func disable() {
-      mgr.stopUpdatingLocation()
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-      if let currentLocation = locations.first {
-        print(currentLocation)
-        location = currentLocation
-        appendPin(location: currentLocation)
-        updateRegion(location: currentLocation)
-      }
-    }
-
-    func appendPin(location: CLLocation) {
-      pins.append(PinLocation(coordinate: location.coordinate))
-    }
-
-    func updateRegion(location: CLLocation) {
-      region = MKCoordinateRegion(
-        center: location.coordinate,
-        span: MKCoordinateSpan(latitudeDelta: 0.0015, longitudeDelta: 0.0015))
-    }
-
-    func startStopLocationTracking() {
-      isLocationTrackingEnabled.toggle()
-      if isLocationTrackingEnabled {
-        enable()
-      } else {
-        disable()
-      }
-    }
+    scheduleAppRefresh()
+    return true
   }
-
-  struct PinLocation: Identifiable {
-    let id = UUID()
-    var coordinate: CLLocationCoordinate2D
+  
+  func refresh() {
+    let formattedDate = Self.dateFormatter.string(from: Date())
+    UserDefaults.standard.set(
+      formattedDate,
+      forKey: UserDefaultsKeys.lastRefreshDateKey)
+    print("refresh occurred")
+  }
+  
+  func scheduleAppRefresh() {
+    let request = BGAppRefreshTaskRequest(
+      identifier: AppConstants.backgroundTaskIdentifier)
+    request.earliestBeginDate = Date(timeIntervalSinceNow: 1 * 60)
+    do {
+      try BGTaskScheduler.shared.submit(request)
+      print("background refresh scheduled")
+    } catch {
+      print("Couldn't schedule app refresh \(error.localizedDescription)")
+    }
   }
 }
+
+
