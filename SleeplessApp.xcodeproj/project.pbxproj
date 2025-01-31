@@ -23,6 +23,7 @@
 		38F48FCE2828D26200DE7127 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F48FCD2828D26200DE7127 /* LocationView.swift */; };
 		38F48FD02828D3EE00DE7127 /* CompleteTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F48FCF2828D3EE00DE7127 /* CompleteTaskView.swift */; };
 		38F48FD22828D49100DE7127 /* RefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F48FD12828D49100DE7127 /* RefreshView.swift */; };
+		C343C0BF2D4D2E320098AC0E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C343C0BE2D4D2E2D0098AC0E /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		38F48FCD2828D26200DE7127 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		38F48FCF2828D3EE00DE7127 /* CompleteTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTaskView.swift; sourceTree = "<group>"; };
 		38F48FD12828D49100DE7127 /* RefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshView.swift; sourceTree = "<group>"; };
+		C343C0BE2D4D2E2D0098AC0E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 		38C0E1EF2831B4BF006F2261 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				C343C0BE2D4D2E2D0098AC0E /* AppDelegate.swift */,
 				1839F4AF25190F2A00BB00F1 /* AppMain.swift */,
 				38292BE0283474390040D7B3 /* AppConstants.swift */,
 			);
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C343C0BF2D4D2E320098AC0E /* AppDelegate.swift in Sources */,
 				38F48FD22828D49100DE7127 /* RefreshView.swift in Sources */,
 				38292BD3283440070040D7B3 /* AudioModel.swift in Sources */,
 				38292BDD2834523A0040D7B3 /* CompleteTaskModel.swift in Sources */,
@@ -392,7 +396,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.sleepless;
+				PRODUCT_BUNDLE_IDENTIFIER = com.koko.sleepless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -413,7 +417,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.sleepless;
+				PRODUCT_BUNDLE_IDENTIFIER = com.koko.sleepless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
