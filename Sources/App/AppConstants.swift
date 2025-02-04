@@ -33,7 +33,7 @@
 import Foundation
 
 enum AppConstants {
-  static let backgroundTaskIdentifier = "com.mycompany.myapp.task.refresh"
+  static let backgroundTaskIdentifier = "com.koko.sleepless.task.refresh"
 }
 
 enum UserDefaultsKeys {
